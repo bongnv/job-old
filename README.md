@@ -1,2 +1,2 @@
-# pipe
-This package wires different stages where each stage handles a step of processing in order to achieve loose coupling and SRP in each stages.
+# task
+Package `task` helps compose multiple smaller tasks to achieve a complex logic in order to achieve loose coupling and SRP.

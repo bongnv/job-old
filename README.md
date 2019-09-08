@@ -9,7 +9,7 @@ Package `task` helps compose multiple smaller tasks to achieve a complex logic i
 
 ## Motivation
 
-In any program, logic grows with time. Without any mechanism to break into smaller parts, the program will become harder to maintain day by day. `task` provides a functionality to allow to break a complex business logic into smaller `Doer` and then easily compose together.
+In any program, logic grows with time. Without any mechanism to break into smaller parts, the program will become harder to maintain day by day. `task` provides a functionality to allow to break a complex business logic into smaller `Doer` and then easily compose them together.
 
 ## How to use
 

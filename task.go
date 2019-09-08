@@ -2,7 +2,6 @@ package task
 
 import (
 	"context"
-	"fmt"
 )
 
 // Task provides method Wait for a task.
@@ -32,11 +31,6 @@ func (t *taskImpl) Wait(ctx context.Context) error {
 
 func (t *taskImpl) start(ctx context.Context) {
 	defer close(t.done)
-	defer func() {
-		if r := recover(); r != nil {
-			t.err = fmt.Errorf("task: panic recovered with %v", r)
-		}
-	}()
 
 	if err := waitFor(ctx, t.dependencies); err != nil {
 		t.err = err

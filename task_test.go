@@ -37,21 +37,16 @@ func Test_taskImpl(t *testing.T) {
 	})
 
 	t.Run("task-panic", func(t *testing.T) {
-		called := false
 		mockTask := &taskImpl{
 			done: make(chan struct{}),
 			doer: DoFunc(func(_ context.Context) error {
-				called = true
 				panic("runtime panic")
 			}),
 		}
 
-		assert.NotPanics(t, func() {
+		assert.Panics(t, func() {
 			mockTask.start(context.Background())
 		})
-		err := mockTask.Wait(context.Background())
-		assert.Error(t, err)
-		assert.True(t, called)
 	})
 
 	t.Run("task-err", func(t *testing.T) {

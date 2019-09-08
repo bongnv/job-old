@@ -39,7 +39,7 @@ func doAnotherThing(data metadata) task.DoFunc {
 
 ### Compose `Doer` together
 
-In order to compose all `Doer` together, a `Job` is needed. A `Job` groups `Task` together. Each task executes a `Doer`. In this example, let's say `doAnotherThing` requires `doSomething` to be finished.
+In order to compose all `Doer` together, a `Job` is needed. A `Job` groups `Task` together where each task executes a `Doer`. In this example, let's say `doAnotherThing` requires `doSomething` to be finished.
 
 ```go
 func applicationLogic(ctx context.Context, data metadata) error {

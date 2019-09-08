@@ -18,5 +18,5 @@ install-tools:
 	@echo ">  Installing tools..."
 	go get -u golang.org/x/lint/golint
 
-ci: install-tools lint test-covearge
+ci: install-tools lint test-coverage
 

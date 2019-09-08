@@ -9,7 +9,7 @@ type Doer interface {
 	Do(ctx context.Context) error
 }
 
-// Dofunc is an implementation of Doer from a function.
+// DoFunc is an implementation of Doer from a function.
 type DoFunc func(ctx context.Context) error
 
 // Do implements Doer interface.

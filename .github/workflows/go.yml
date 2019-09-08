@@ -9,7 +9,6 @@ jobs:
       matrix:
         go_version: [1.11, 1.12, 1.13]
     steps:
-
     - name: Set up Go ${{ matrix.go_version }}
       uses: actions/setup-go@v1
       with:
@@ -20,7 +19,9 @@ jobs:
       uses: actions/checkout@v1
 
     - name: CI
-      run: make ci
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make ci
 
     - name: Build
       run: go build -v .

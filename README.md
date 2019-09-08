@@ -43,10 +43,9 @@ In order to compose all `Doer` together, a `Job` is needed. A `Job` groups `Task
 
 ```go
 func applicationLogic(ctx context.Context, data metadata) error {
-    job := task.NewJob()
-    taskDoSomething := job.Run(ctx, doSomething(data))
-    _ := job.Run(ctx, doAnotherThing(data), taskDoSomething)
-    return job.Wait(ctx)
+    taskDoSomething := task.Run(ctx, doSomething(data))
+    taskDoAnotherThing := task.Run(ctx, doAnotherThing(data), taskDoSomething)
+    return task.Wait(ctx, taskDoAnotherThing)
 }
 ```
 

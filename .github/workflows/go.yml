@@ -1,6 +1,29 @@
 name: Go
 on: [push]
 jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.12
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@master
+
+    - name: CI
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make ci
+
+    - name: Upload Coverage report to CodeCov
+      uses: codecov/codecov-action@v1.0.2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.txt
 
   build:
     name: Build
@@ -16,18 +39,8 @@ jobs:
       id: go
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
-
-    - name: CI
-      run: |
-        export PATH=$PATH:$(go env GOPATH)/bin
-        make ci
+      uses: actions/checkout@master
 
     - name: Build
       run: go build -v .
 
-    - name: Upload Coverage report to CodeCov
-      uses: codecov/codecov-action@v1.0.2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.txt

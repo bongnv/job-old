@@ -7,6 +7,10 @@
 
 Package `task` helps compose multiple smaller tasks to achieve a complex logic in order to achieve loose coupling and SRP.
 
+## Motivation
+
+In any program, logic grows with time. Without any mechanism to break into smaller parts, the program will become harder to maintain day by day. `task` provides a functionality to allow to break a complex business logic into smaller `Doer` and then easily compose together.
+
 ## How to use
 
 ```go

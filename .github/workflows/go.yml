@@ -25,3 +25,9 @@ jobs:
 
     - name: Build
       run: go build -v .
+
+    - name: Upload Coverage report to CodeCov
+      uses: codecov/codecov-action@master
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+        file: ./coverage.txt

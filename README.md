@@ -52,4 +52,7 @@ func applicationLogic(ctx context.Context, data metadata) error {
 
 `task` does not use ```recover()``` so panics will kill the process like normal. 
 
-TODO
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+

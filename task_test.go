@@ -94,3 +94,16 @@ func mockErrDependency() Task {
 	close(mock.done)
 	return mock
 }
+
+func Test_Run(t *testing.T) {
+	called := false
+	doer := DoFunc(func(_ context.Context) error {
+		called = true
+		return nil
+	})
+
+	task1 := Run(context.Background(), doer)
+	err := Wait(context.Background(), task1)
+	assert.NoError(t, err)
+	assert.True(t, called)
+}

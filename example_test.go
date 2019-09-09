@@ -15,13 +15,12 @@ func printNumber(number int) task.DoFunc {
 	}
 }
 
-func ExampleJob_sequential() {
+func Example_sequential() {
 	ctx := context.Background()
-	j := task.NewJob()
-	taskPrint1 := j.Run(ctx, printNumber(1))
-	taskPrint2 := j.Run(ctx, printNumber(2), taskPrint1)
-	_ = j.Run(ctx, printNumber(3), taskPrint2)
-	err := j.Wait(ctx)
+	taskPrint1 := task.Run(ctx, printNumber(1))
+	taskPrint2 := task.Run(ctx, printNumber(2), taskPrint1)
+	taskPrint3 := task.Run(ctx, printNumber(3), taskPrint2)
+	err := task.Wait(ctx, taskPrint3)
 	fmt.Println(err)
 	// Output:
 	// 1
@@ -37,14 +36,13 @@ func counter(number *int64) task.DoFunc {
 	}
 }
 
-func ExampleJob_concurrent() {
+func Example_concurrent() {
 	ctx := context.Background()
 	var total int64
-	j := task.NewJob()
-	j.Run(ctx, counter(&total))
-	j.Run(ctx, counter(&total))
-	j.Run(ctx, counter(&total))
-	err := j.Wait(ctx)
+	t1 := task.Run(ctx, counter(&total))
+	t2 := task.Run(ctx, counter(&total))
+	t3 := task.Run(ctx, counter(&total))
+	err := task.Wait(ctx, t1, t2, t3)
 	fmt.Println(err)
 	fmt.Println(total)
 	// Output:

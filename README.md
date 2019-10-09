@@ -51,9 +51,7 @@ func applicationLogic(ctx context.Context, data metadata) error {
 
 ## FAQs
 
-### What happens if a `Doer` panics?
-
-`task` does not use ```recover()``` so panics will kill the process like normal. 
+TODO
 
 ## License
 

@@ -2,6 +2,7 @@ package task
 
 import (
 	"context"
+	"fmt"
 )
 
 // Task provides method Wait for a task.
@@ -14,13 +15,11 @@ type Task interface {
 // Run executes a Doer with a list of dependencies.
 // It will wait for all dependencies to finish before start Doer.
 func Run(ctx context.Context, doer Doer, dependencies ...Task) Task {
-	t := &taskImpl{
-		done:         make(chan struct{}),
-		dependencies: dependencies,
-		doer:         doer,
+	t := &asyncTask{
+		done: make(chan struct{}),
 	}
 
-	go t.start(ctx)
+	go startTask(ctx, t, doer, dependencies)
 	return t
 }
 
@@ -35,16 +34,13 @@ func Wait(ctx context.Context, tasks ...Task) error {
 	return nil
 }
 
-type taskImpl struct {
-	dependencies []Task
-	doer         Doer
-
+type asyncTask struct {
 	done chan struct{}
 	err  error
 }
 
 // Wait implements Task interface.
-func (t *taskImpl) Wait(ctx context.Context) error {
+func (t *asyncTask) Wait(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
@@ -53,15 +49,20 @@ func (t *taskImpl) Wait(ctx context.Context) error {
 	}
 }
 
-func (t *taskImpl) start(ctx context.Context) {
+func startTask(ctx context.Context, t *asyncTask, doer Doer, dependencies []Task) {
 	defer close(t.done)
+	defer func() {
+		if r := recover(); r != nil {
+			t.err = fmt.Errorf("task: panic while executing: %v", r)
+		}
+	}()
 
-	if err := Wait(ctx, t.dependencies...); err != nil {
+	if err := Wait(ctx, dependencies...); err != nil {
 		t.err = err
 		return
 	}
 
-	if err := t.doer.Do(ctx); err != nil {
+	if err := doer.Do(ctx); err != nil {
 		t.err = err
 		return
 	}

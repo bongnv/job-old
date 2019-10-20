@@ -1,14 +1,14 @@
-package task_test
+package job_test
 
 import (
 	"context"
 	"fmt"
 	"sync/atomic"
 
-	"github.com/bongnv/task"
+	"github.com/bongnv/job"
 )
 
-func printNumber(number int) task.DoFunc {
+func printNumber(number int) job.TaskFunc {
 	return func(_ context.Context) error {
 		fmt.Println(number)
 		return nil
@@ -17,10 +17,11 @@ func printNumber(number int) task.DoFunc {
 
 func Example_sequential() {
 	ctx := context.Background()
-	taskPrint1 := task.Run(ctx, printNumber(1))
-	taskPrint2 := task.Run(ctx, printNumber(2), taskPrint1)
-	taskPrint3 := task.Run(ctx, printNumber(3), taskPrint2)
-	err := task.Wait(ctx, taskPrint3)
+	j := job.New()
+	taskPrint1 := j.Start(ctx, printNumber(1))
+	taskPrint2 := j.Start(ctx, printNumber(2), taskPrint1)
+	_ = j.Start(ctx, printNumber(3), taskPrint2)
+	err := j.Wait(ctx)
 	fmt.Println(err)
 	// Output:
 	// 1
@@ -29,7 +30,7 @@ func Example_sequential() {
 	// <nil>
 }
 
-func counter(number *int64) task.DoFunc {
+func counter(number *int64) job.TaskFunc {
 	return func(_ context.Context) error {
 		atomic.AddInt64(number, 1)
 		return nil
@@ -37,12 +38,13 @@ func counter(number *int64) task.DoFunc {
 }
 
 func Example_concurrent() {
+	j := job.New()
 	ctx := context.Background()
 	var total int64
-	t1 := task.Run(ctx, counter(&total))
-	t2 := task.Run(ctx, counter(&total))
-	t3 := task.Run(ctx, counter(&total))
-	err := task.Wait(ctx, t1, t2, t3)
+	_ = j.Start(ctx, counter(&total))
+	_ = j.Start(ctx, counter(&total))
+	_ = j.Start(ctx, counter(&total))
+	err := j.Wait(ctx)
 	fmt.Println(err)
 	fmt.Println(total)
 	// Output:
